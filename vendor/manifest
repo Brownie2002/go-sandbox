@@ -1,0 +1,11 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/mattn/go-sqlite3",
+			"repository": "https://github.com/mattn/go-sqlite3",
+			"revision": "a35b097634ab3a42fac3f7a1c5ed1f898d5cdd5f",
+			"branch": "master"
+		}
+	]
+}

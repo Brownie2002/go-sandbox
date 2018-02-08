@@ -2,6 +2,12 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/kpawlik/geojson",
+			"repository": "https://github.com/kpawlik/geojson",
+			"revision": "1a4f120c6b41bf523f825519ef8c25a50d1c9628",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/mattn/go-sqlite3",
 			"repository": "https://github.com/mattn/go-sqlite3",
 			"revision": "a35b097634ab3a42fac3f7a1c5ed1f898d5cdd5f",

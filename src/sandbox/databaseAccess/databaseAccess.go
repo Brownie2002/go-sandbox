@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -46,7 +47,7 @@ func main() {
 
 	defer stmt.Close()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		_, err = stmt.Exec(i, fmt.Sprintf("こんにちわ世界%03d", i))
 		if err != nil {
 			log.Fatal(err)
@@ -112,6 +113,30 @@ func main() {
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	connStr := "user=bdesaint password=bdesaint dbname=reference_db_bdesaint_GDLIB host=devdb08 port=5432 sslmode=disable"
+	dbSQL, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbSQL.Close()
+
+	rows2, err := dbSQL.Query("SELECT id, data_source FROM dem_view")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows2.Close()
+
+	fmt.Println("toto")
+	for rows2.Next() {
+		var id int
+		var datasource string
+		err := rows.Scan(&id, &datasource)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Test: ", id, datasource)
 	}
 
 }

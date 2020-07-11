@@ -10,16 +10,6 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
-func (r *RequestError) Error() string {
-	return fmt.Sprintf("status %d: err %v :msg %v", r.StatusCode, r.Err, r.Message)
-}
-
-type RequestError struct {
-	StatusCode int
-	Message    string
-	Err        error
-}
-
 func main() {
 	server := echo.New()
 	server.Use(
@@ -30,8 +20,8 @@ func main() {
 	server.Debug = false
 	server.HideBanner = true
 	server.HTTPErrorHandler = func(err error, c echo.Context) {
-		// Take required information from error and context and send it to a service like New Relic
-		fmt.Println(c.Path(), c.QueryParams(), err.Error())
+		// Print to stdout
+		fmt.Println("Message from HTTPErrorHandler", c.Path(), c.QueryParams(), err)
 
 		// Call the default handler to return the HTTP response
 		server.DefaultHTTPErrorHandler(err, c)
@@ -40,7 +30,16 @@ func main() {
 	server.GET("/users", func(c echo.Context) error {
 		users, err := dbGetUsers()
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
+			return echo.NewHTTPError(err.code, err)
+		}
+
+		return c.JSON(http.StatusOK, users)
+	})
+
+	server.GET("/posts", func(c echo.Context) error {
+		users, err := dbPostUsers()
+		if err != nil {
+			return echo.NewHTTPError(err.code, err)
 		}
 
 		return c.JSON(http.StatusOK, users)
@@ -49,10 +48,21 @@ func main() {
 	log.Fatal(server.Start(":8088"))
 }
 
-func dbGetUsers() ([]string, error) {
-	return nil, &RequestError{
-		StatusCode: 404,
-		Message:    "Message custom.",
-		Err:        errors.New("unavailable"),
+func dbGetUsers() ([]string, *ServiceError) {
+
+	err := &ServiceError{
+		code:    http.StatusBadRequest,
+		Message: "Message custom.",
+		Err:     errors.New("unavailable"),
+	}
+
+	return nil, err
+}
+
+func dbPostUsers() ([]string, *ServiceError) {
+
+	return nil, &ServiceError{http.StatusTeapot,
+		"Error for post endpoint.",
+		errors.New("Another error."),
 	}
 }

@@ -30,7 +30,7 @@ func main() {
 	server.GET("/users", func(c echo.Context) error {
 		users, err := dbGetUsers()
 		if err != nil {
-			return echo.NewHTTPError(err.code, err)
+			return c.JSON(err.Code, err)
 		}
 
 		return c.JSON(http.StatusOK, users)
@@ -39,7 +39,7 @@ func main() {
 	server.GET("/posts", func(c echo.Context) error {
 		users, err := dbPostUsers()
 		if err != nil {
-			return echo.NewHTTPError(err.code, err)
+			return echo.NewHTTPError(err.Code, err)
 		}
 
 		return c.JSON(http.StatusOK, users)
@@ -51,8 +51,8 @@ func main() {
 func dbGetUsers() ([]string, *ServiceError) {
 
 	err := &ServiceError{
-		code:    http.StatusBadRequest,
-		Message: "Message custom.",
+		Code:    http.StatusBadRequest,
+		Message: "Error for get endpoint..",
 		Err:     errors.New("unavailable"),
 	}
 
